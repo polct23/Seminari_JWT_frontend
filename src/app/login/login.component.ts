@@ -50,7 +50,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(loginData).subscribe({
       next: (response) => {
         console.log('Login exitoso:', response);
-        localStorage.setItem('access_token', JSON.stringify(response.token));
+        localStorage.setItem('access_token', response.token);
         this.exportLoggedIn.emit(true);
       },
       error: (error) => {

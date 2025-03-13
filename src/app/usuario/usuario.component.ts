@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, EventEmitter, Output } from '@angular/core';
 import { User } from '../models/user.model';
 import { ColaboradoresComponent } from "../colaboradores/colaboradores.component";
 import { FormsModule } from '@angular/forms';
@@ -11,7 +11,6 @@ import { FormsModule } from '@angular/forms';
   standalone: true
 })
 export class UsuarioComponent {
-
   foto: string;
   mostrardata: boolean;
   

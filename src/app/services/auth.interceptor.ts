@@ -1,20 +1,36 @@
-import { Injectable } from '@angular/core';
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpEvent, HttpHandlerFn, HttpRequest } from '@angular/common/http';
+import { inject, EventEmitter, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable, catchError, throwError } from 'rxjs';
 
-@Injectable()
-export class JwtInterceptor implements HttpInterceptor 
-{
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> 
-  {
-    let token = localStorage.getItem('access_token');
-    if (token) {
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+export function jwtInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
+  /**
+   * @Output() exportLoggedIn = new EventEmitter<boolean>();
+    token_expired() {
+      this.exportLoggedIn.emit(false);
     }
-    return next.handle(request);
+   */
+  
+  console.log("Dentro del interceptador");
+
+  const token = localStorage.getItem('access_token');
+  const router = inject(Router);
+
+  if (token) {
+    req = req.clone({
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
+    });
   }
- }
+
+  return next(req).pipe(
+    catchError((error) => {
+      if (error.status === 401) {
+        localStorage.removeItem('access_token'); // Limpiar el token si es inválido
+        window.location.href = '/login';
+      }
+      return throwError(() => error); // Propagar el error
+    })
+  );
+}
