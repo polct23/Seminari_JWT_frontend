@@ -24,7 +24,7 @@ export function jwtInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): 
   return next(req).pipe(
     catchError((error) => {
       if (error.status === 401) {
-        localStorage.removeItem('access_token'); // Limpiar el token si es inválido
+        localStorage.removeItem('access_token'); // Neteja token si no és vàlid
         toastr.error(
           'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
           'Sesión Expirada',
@@ -34,7 +34,7 @@ export function jwtInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): 
           }
         );
       }
-      return throwError(() => error); // Propagar el error
+      return throwError(() => error);
     })
   );
 }
