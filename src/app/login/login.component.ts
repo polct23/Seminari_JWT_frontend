@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
 
+  isLoading: boolean = true;
   date: Date = new Date("2025-08-14");
   Prova: string = "Este texto deberia estar en mayusculas";
   formularioLogin: FormGroup;
@@ -38,9 +39,13 @@ export class LoginComponent implements OnInit {
       console.log("esto" +token);
       if (token) {
         console.log("Token rebut:", token);
-        this.authService.handleGoogleCallback(token); // Guarda el token
-        this.exportLoggedIn.emit(true); // Avisa de que l'usuari està
-       
+        this.authService.handleGoogleCallback(token).subscribe(() => {
+          this.isLoading = false; 
+          this.exportLoggedIn.emit(true); 
+        });// Avisa de que l'usuari està
+      }
+      else{
+        this.isLoading = false;
       }
       
     });

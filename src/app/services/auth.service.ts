@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,8 +16,9 @@ export class AuthService {
     window.location.href = `${this.apiUrl}/google`;
   }
 
-  handleGoogleCallback(token: string): void {
+  handleGoogleCallback(token: string): Observable<any> {
     localStorage.setItem('access_token', token);
+    return of({ success: true, token: token });
   }
 
   isAuthenticated(): boolean {

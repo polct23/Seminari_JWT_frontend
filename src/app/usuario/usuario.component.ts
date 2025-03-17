@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 export class UsuarioComponent {
   foto: string;
   mostrardata: boolean;
+  isLoading: boolean = true;
   
   usuario: User = {
     id: 1,
@@ -24,6 +25,10 @@ export class UsuarioComponent {
   constructor() {      
     this.foto = "https://github.com/tonioller.png";
     this.mostrardata = false;
+
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 2000);
   }
 
   mostrardatos(){
