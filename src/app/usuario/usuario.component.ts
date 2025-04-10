@@ -1,8 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { User } from '../models/user.model';
 import { ColaboradoresComponent } from "../colaboradores/colaboradores.component";
 import { FormsModule } from '@angular/forms';
+import { jwtDecode } from 'jwt-decode';
+
 @Component({
   selector: 'app-usuario',
   imports: [CommonModule, ColaboradoresComponent, FormsModule],
@@ -10,33 +12,44 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './usuario.component.css',
   standalone: true
 })
-export class UsuarioComponent {
-  foto: string;
-  mostrardata: boolean;
+export class UsuarioComponent implements OnInit {
+  foto: string = '';
+  mostrardata: boolean = false;
   isLoading: boolean = true;
-  
-  usuario: User = {
-    id: 1,
-    name: "Toni",
-    age: 40,
-    email: "toni.oller@gmail.com",
-  };
-  
-  constructor() {      
-    this.foto = "https://github.com/tonioller.png";
-    this.mostrardata = false;
+  usuario: User | null = null;
 
-    setTimeout(() => {
-      this.isLoading = false;
-    }, 2000);
+  constructor() {}
+
+  ngOnInit(): void {
+    this.loadUserData();
   }
 
-  mostrardatos(){
-    this.mostrardata = true;
+  loadUserData(): void {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const decodedToken: any = jwtDecode(token);
+        this.usuario = {
+          id: decodedToken.id || 0,
+          name: decodedToken.name || 'Desconocido',
+          age: decodedToken.age || 0,
+          email: decodedToken.email || 'No disponible',
+        };
+        this.foto = decodedToken.photo || 'https://via.placeholder.com/150';
+      } catch (error) {
+        console.error('Error al decodificar el token:', error);
+      }
+    }
+    this.isLoading = false;
   }
 
-  getName(Name: string){
-    this.usuario.name = Name;
+  mostrardatos(): void {
+    this.mostrardata = !this.mostrardata;
   }
 
+  getName(Name: string): void {
+    if (this.usuario) {
+      this.usuario.name = Name;
+    }
+  }
 }

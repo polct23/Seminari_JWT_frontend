@@ -2,17 +2,15 @@
     <div *ngIf="isLoading">
         <p>Cargando...</p>
     </div>
-    <div *ngIf="!isLoading">
+    <div *ngIf="!isLoading && usuario">
         <div class="centrado-negrita">
-            Datos del usuario {{usuario.name}}:       
+            Datos del usuario {{ usuario.name }}:
         </div>
-        <img (click) = "mostrardatos()" class="imagen-perfil" alt="photo" [src]="foto" />
-        <div class="datos-container">
-            @if (mostrardata) {
-                <p> <strong>Nombre: </strong>  {{usuario.name}}</p>
-                <p> <strong>Años: </strong> {{usuario.age}}</p>
-                <p> <strong>Email: </strong> {{usuario.email}}</p>
-            }     
+        <img (click)="mostrardatos()" class="imagen-perfil" alt="photo" [src]="foto" />
+        <div class="datos-container" *ngIf="mostrardata">
+            <p><strong>Nombre:</strong> {{ usuario.name }}</p>
+            <p><strong>Años:</strong> {{ usuario.age }}</p>
+            <p><strong>Email:</strong> {{ usuario.email }}</p>
         </div>
         <app-colaboradores 
             (changeNameEvent)="getName($event)" 
@@ -20,6 +18,3 @@
         </app-colaboradores>
     </div>
 </div>
-
-
- 
